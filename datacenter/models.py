@@ -19,23 +19,25 @@ class Schoolkid(models.Model):
         for mark in bad_marks:
             mark.points = random.choice([4,5])
             mark.save()
-        return f'{bad_marks.count()} marks fixed'
+        return bad_marks.count()
 
     def remove_chastisements(self):
         chastisements = Сhastisement.objects.filter(schoolkid=self)
-        return f'{chastisements.count()} chastisements deleted'
+        chastisements_qty = chastisements.count()
+        chastisements.delete()
+        return chastisements_qty
 
     def create_commendation(self, subject_title, compliments, qty=1):
         lessons = Lesson.objects.filter(
             year_of_study=self.year_of_study,
             group_letter=self.group_letter,
             subject__title__contains=subject_title,
-        ).order_by('?')
+        ).order_by('?')[:qty]
 
         if not lessons:
-            return 'No lessons found'
+            return
 
-        for lesson in lessons[:qty]:
+        for lesson in lessons:
             text = random.choice(compliments)
             commendation = Commendation(
                 text=text,
@@ -46,7 +48,7 @@ class Schoolkid(models.Model):
             )
             commendation.save()
 
-        return f'{qty} commendations created'
+        return qty
 
 
 class Teacher(models.Model):

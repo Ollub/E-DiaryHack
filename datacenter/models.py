@@ -48,7 +48,7 @@ class Schoolkid(models.Model):
             )
             commendation.save()
 
-        return qty
+        return lessons.count()
 
 
 class Teacher(models.Model):
